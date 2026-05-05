@@ -81,13 +81,13 @@ esp_err_t audio_handler(httpd_req_t *req){
     httpd_resp_set_type(req, "audio/wav");
 
     uint8_t wavHeader[44] = {
-        'R','I','F','F',0,0,0,0,'W','A','V','E',
-        'f','m','t',' ',16,0,0,0,1,0,1,0,
-        0x40,0x1F,0,0,   // 8000 Hz
-        0x80,0x3E,0,0,
-        2,0,16,0,
-        'd','a','t','a',0,0,0,0
-    };
+    'R','I','F','F',0,0,0,0,'W','A','V','E',
+    'f','m','t',' ',16,0,0,0,1,0,1,0,
+    0x80,0x3E,0,0,   // 🔥 16000 Hz
+    0x00,0x7D,0,0,
+    2,0,16,0,
+    'd','a','t','a',0,0,0,0
+};
 
     httpd_resp_send_chunk(req, (const char*)wavHeader, 44);
 
@@ -126,23 +126,31 @@ esp_err_t index_handler(httpd_req_t *req){
 void i2s_init(){
 
     pinMode(LR_PIN, OUTPUT);
+
     digitalWrite(LR_PIN, LOW);
 
     i2s_config_t config;
     memset(&config, 0, sizeof(config));
 
     config.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX);
-    config.sample_rate = 8000;
+
+    // 🔥 QUAN TRỌNG NHẤT
+    config.sample_rate = 16000;
+
     config.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT;
+
     config.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT;
+
     config.communication_format = I2S_COMM_FORMAT_I2S;
 
     config.intr_alloc_flags = 0;
-    config.dma_buf_count = 4;
-    config.dma_buf_len = 256;
+    config.dma_buf_count = 8;     // 🔥 tăng buffer cho audio
+    config.dma_buf_len = 512;
 
     config.use_apll = false;
     config.tx_desc_auto_clear = false;
+
+    // 🔥 FIX LỖI S3
     config.fixed_mclk = -1;
 
     i2s_pin_config_t pin_config;
@@ -155,7 +163,8 @@ void i2s_init(){
     i2s_driver_install(I2S_PORT, &config, 0, NULL);
     i2s_set_pin(I2S_PORT, &pin_config);
 
-    i2s_set_clk(I2S_PORT, 8000, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
+    // 🔥 set clock lại cho chắc
+    i2s_set_clk(I2S_PORT, 16000, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
 
     i2s_zero_dma_buffer(I2S_PORT);
     i2s_start(I2S_PORT);

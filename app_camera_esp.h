@@ -1,0 +1,73 @@
+#ifndef TENSORFLOW_LITE_MICRO_EXAMPLES_PERSON_DETECTION_ESP_APP_CAMERA_ESP_H_
+#define TENSORFLOW_LITE_MICRO_EXAMPLES_PERSON_DETECTION_ESP_APP_CAMERA_ESP_H_
+
+#include "sensor.h"
+#include "esp_camera.h"
+#include "esp_log.h"
+#include "esp_system.h"
+#include "sensor.h"
+
+#include "esp_main.h"
+
+/**
+ * PIXFORMAT_RGB565,    // 2BPP/RGB565
+ * PIXFORMAT_YUV422,    // 2BPP/YUV422
+ * PIXFORMAT_GRAYSCALE, // 1BPP/GRAYSCALE
+ * PIXFORMAT_JPEG,      // JPEG/COMPRESSED
+ * PIXFORMAT_RGB888,    // 3BPP/RGB888
+ */
+#if defined DISPLAY_SUPPORT
+#define CAMERA_PIXEL_FORMAT PIXFORMAT_RGB565
+#else
+#define CAMERA_PIXEL_FORMAT PIXFORMAT_GRAYSCALE
+#endif
+
+/*
+ * FRAMESIZE_96X96,    // 96x96
+ * FRAMESIZE_QQVGA,    // 160x120
+ * FRAMESIZE_QQVGA2,   // 128x160
+ * FRAMESIZE_QCIF,     // 176x144
+ * FRAMESIZE_HQVGA,    // 240x176
+ * FRAMESIZE_QVGA,     // 320x240
+ * FRAMESIZE_CIF,      // 400x296
+ * FRAMESIZE_VGA,      // 640x480
+ * FRAMESIZE_SVGA,     // 800x600
+ * FRAMESIZE_XGA,      // 1024x768
+ * FRAMESIZE_SXGA,     // 1280x1024
+ * FRAMESIZE_UXGA,     // 1600x1200
+ */
+#define CAMERA_FRAME_SIZE FRAMESIZE_96X96
+
+// Định nghĩa cấu hình cho ESP32-S3-EYE (của bạn)
+#define CAMERA_MODULE_NAME "ESP32-S3-EYE"
+#define CAMERA_PIN_PWDN -1
+#define CAMERA_PIN_RESET -1
+#define CAMERA_PIN_XCLK 15
+#define CAMERA_PIN_SIOD 4
+#define CAMERA_PIN_SIOC 5
+
+#define CAMERA_PIN_D7 16  // Y9
+#define CAMERA_PIN_D6 17  // Y8
+#define CAMERA_PIN_D5 18  // Y7
+#define CAMERA_PIN_D4 12  // Y6
+#define CAMERA_PIN_D3 10  // Y5
+#define CAMERA_PIN_D2 8   // Y4
+#define CAMERA_PIN_D1 9   // Y3
+#define CAMERA_PIN_D0 11  // Y2
+#define CAMERA_PIN_VSYNC 6
+#define CAMERA_PIN_HREF 7
+#define CAMERA_PIN_PCLK 13
+
+#define XCLK_FREQ_HZ 15000000
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int app_camera_init();
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // TENSORFLOW_LITE_MICRO_EXAMPLES_PERSON_DETECTION_ESP_APP_CAMERA_ESP_H_
